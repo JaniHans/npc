@@ -1,0 +1,143 @@
+<svg width="80" height="160" xmlns="http://www.w3.org/2000/svg" style="image-rendering: pixelated;">
+  <!-- Blue Wizard - Facing Right (0, 0) -->
+  <g id="blue-right">
+    <!-- Shadow -->
+    <ellipse cx="20" cy="35" rx="7" ry="2" fill="rgba(0,0,0,0.3)"/>
+    <!-- Hat -->
+    <polygon points="20,5 14,15 26,15" fill="hsl(240, 80%, 30%)"/>
+    <rect x="12" y="14" width="16" height="3" fill="hsl(240, 70%, 25%)"/>
+    <!-- Head -->
+    <circle cx="20" cy="20" r="5" fill="#ffdbac"/>
+    <!-- Eyes -->
+    <rect x="18" y="19" width="2" height="2" fill="#000"/>
+    <rect x="22" y="19" width="2" height="2" fill="#000"/>
+    <!-- Beard -->
+    <polygon points="16,23 15,28 20,26 25,28 24,23" fill="#ddd"/>
+    <!-- Robe -->
+    <polygon points="20,24 12,26 14,36 26,36 28,26" fill="hsl(240, 70%, 50%)"/>
+    <!-- Staff -->
+    <line x1="10" y1="20" x2="10" y2="34" stroke="#8b4513" stroke-width="2.5"/>
+    <circle cx="10" cy="18" r="3" fill="hsl(60, 80%, 60%)"/>
+    <circle cx="10" cy="18" r="1.5" fill="hsl(60, 80%, 80%)"/>
+    <!-- Arm -->
+    <line x1="16" y1="26" x2="10" y2="22" stroke="#ffdbac" stroke-width="2.5"/>
+  </g>
+  
+  <!-- Blue Wizard - Facing Left (40, 0) -->
+  <g id="blue-left" transform="translate(40, 0)">
+    <ellipse cx="20" cy="35" rx="7" ry="2" fill="rgba(0,0,0,0.3)"/>
+    <polygon points="20,5 14,15 26,15" fill="hsl(240, 80%, 30%)"/>
+    <rect x="12" y="14" width="16" height="3" fill="hsl(240, 70%, 25%)"/>
+    <circle cx="20" cy="20" r="5" fill="#ffdbac"/>
+    <rect x="16" y="19" width="2" height="2" fill="#000"/>
+    <rect x="20" y="19" width="2" height="2" fill="#000"/>
+    <polygon points="16,23 15,28 20,26 25,28 24,23" fill="#ddd"/>
+    <polygon points="20,24 12,26 14,36 26,36 28,26" fill="hsl(240, 70%, 50%)"/>
+    <line x1="30" y1="20" x2="30" y2="34" stroke="#8b4513" stroke-width="2.5"/>
+    <circle cx="30" cy="18" r="3" fill="hsl(60, 80%, 60%)"/>
+    <circle cx="30" cy="18" r="1.5" fill="hsl(60, 80%, 80%)"/>
+    <line x1="24" y1="26" x2="30" y2="22" stroke="#ffdbac" stroke-width="2.5"/>
+  </g>
+  
+  <!-- Red Wizard - Facing Right (0, 40) -->
+  <g id="red-right" transform="translate(0, 40)">
+    <ellipse cx="20" cy="35" rx="7" ry="2" fill="rgba(0,0,0,0.3)"/>
+    <polygon points="20,5 14,15 26,15" fill="hsl(0, 80%, 30%)"/>
+    <rect x="12" y="14" width="16" height="3" fill="hsl(0, 70%, 25%)"/>
+    <circle cx="20" cy="20" r="5" fill="#ffdbac"/>
+    <rect x="18" y="19" width="2" height="2" fill="#000"/>
+    <rect x="22" y="19" width="2" height="2" fill="#000"/>
+    <polygon points="16,23 15,28 20,26 25,28 24,23" fill="#ddd"/>
+    <polygon points="20,24 12,26 14,36 26,36 28,26" fill="hsl(0, 70%, 50%)"/>
+    <line x1="10" y1="20" x2="10" y2="34" stroke="#8b4513" stroke-width="2.5"/>
+    <circle cx="10" cy="18" r="3" fill="hsl(180, 80%, 60%)"/>
+    <circle cx="10" cy="18" r="1.5" fill="hsl(180, 80%, 80%)"/>
+    <line x1="16" y1="26" x2="10" y2="22" stroke="#ffdbac" stroke-width="2.5"/>
+  </g>
+  
+  <!-- Red Wizard - Facing Left (40, 40) -->
+  <g id="red-left" transform="translate(40, 40)">
+    <ellipse cx="20" cy="35" rx="7" ry="2" fill="rgba(0,0,0,0.3)"/>
+    <polygon points="20,5 14,15 26,15" fill="hsl(0, 80%, 30%)"/>
+    <rect x="12" y="14" width="16" height="3" fill="hsl(0, 70%, 25%)"/>
+    <circle cx="20" cy="20" r="5" fill="#ffdbac"/>
+    <rect x="16" y="19" width="2" height="2" fill="#000"/>
+    <rect x="20" y="19" width="2" height="2" fill="#000"/>
+    <polygon points="16,23 15,28 20,26 25,28 24,23" fill="#ddd"/>
+    <polygon points="20,24 12,26 14,36 26,36 28,26" fill="hsl(0, 70%, 50%)"/>
+    <line x1="30" y1="20" x2="30" y2="34" stroke="#8b4513" stroke-width="2.5"/>
+    <circle cx="30" cy="18" r="3" fill="hsl(180, 80%, 60%)"/>
+    <circle cx="30" cy="18" r="1.5" fill="hsl(180, 80%, 80%)"/>
+    <line x1="24" y1="26" x2="30" y2="22" stroke="#ffdbac" stroke-width="2.5"/>
+  </g>
+  
+  <!-- Green Wizard - Facing Right (0, 80) -->
+  <g id="green-right" transform="translate(0, 80)">
+    <ellipse cx="20" cy="35" rx="7" ry="2" fill="rgba(0,0,0,0.3)"/>
+    <polygon points="20,5 14,15 26,15" fill="hsl(120, 80%, 30%)"/>
+    <rect x="12" y="14" width="16" height="3" fill="hsl(120, 70%, 25%)"/>
+    <circle cx="20" cy="20" r="5" fill="#ffdbac"/>
+    <rect x="18" y="19" width="2" height="2" fill="#000"/>
+    <rect x="22" y="19" width="2" height="2" fill="#000"/>
+    <polygon points="16,23 15,28 20,26 25,28 24,23" fill="#ddd"/>
+    <polygon points="20,24 12,26 14,36 26,36 28,26" fill="hsl(120, 70%, 50%)"/>
+    <line x1="10" y1="20" x2="10" y2="34" stroke="#8b4513" stroke-width="2.5"/>
+    <circle cx="10" cy="18" r="3" fill="hsl(300, 80%, 60%)"/>
+    <circle cx="10" cy="18" r="1.5" fill="hsl(300, 80%, 80%)"/>
+    <line x1="16" y1="26" x2="10" y2="22" stroke="#ffdbac" stroke-width="2.5"/>
+  </g>
+  
+  <!-- Green Wizard - Facing Left (40, 80) -->
+  <g id="green-left" transform="translate(40, 80)">
+    <ellipse cx="20" cy="35" rx="7" ry="2" fill="rgba(0,0,0,0.3)"/>
+    <polygon points="20,5 14,15 26,15" fill="hsl(120, 80%, 30%)"/>
+    <rect x="12" y="14" width="16" height="3" fill="hsl(120, 70%, 25%)"/>
+    <circle cx="20" cy="20" r="5" fill="#ffdbac"/>
+    <rect x="16" y="19" width="2" height="2" fill="#000"/>
+    <rect x="20" y="19" width="2" height="2" fill="#000"/>
+    <polygon points="16,23 15,28 20,26 25,28 24,23" fill="#ddd"/>
+    <polygon points="20,24 12,26 14,36 26,36 28,26" fill="hsl(120, 70%, 50%)"/>
+    <line x1="30" y1="20" x2="30" y2="34" stroke="#8b4513" stroke-width="2.5"/>
+    <circle cx="30" cy="18" r="3" fill="hsl(300, 80%, 60%)"/>
+    <circle cx="30" cy="18" r="1.5" fill="hsl(300, 80%, 80%)"/>
+    <line x1="24" y1="26" x2="30" y2="22" stroke="#ffdbac" stroke-width="2.5"/>
+  </g>
+  
+  <!-- Purple Wizard - Facing Right (0, 120) -->
+  <g id="purple-right" transform="translate(0, 120)">
+    <ellipse cx="20" cy="35" rx="7" ry="2" fill="rgba(0,0,0,0.3)"/>
+    <polygon points="20,5 14,15 26,15" fill="hsl(280, 80%, 30%)"/>
+    <rect x="12" y="14" width="16" height="3" fill="hsl(280, 70%, 25%)"/>
+    <circle cx="20" cy="20" r="5" fill="#ffdbac"/>
+    <rect x="18" y="19" width="2" height="2" fill="#000"/>
+    <rect x="22" y="19" width="2" height="2" fill="#000"/>
+    <polygon points="16,23 15,28 20,26 25,28 24,23" fill="#ddd"/>
+    <polygon points="20,24 12,26 14,36 26,36 28,26" fill="hsl(280, 70%, 50%)"/>
+    <line x1="10" y1="20" x2="10" y2="34" stroke="#8b4513" stroke-width="2.5"/>
+    <circle cx="10" cy="18" r="3" fill="hsl(100, 80%, 60%)"/>
+    <circle cx="10" cy="18" r="1.5" fill="hsl(100, 80%, 80%)"/>
+    <line x1="16" y1="26" x2="10" y2="22" stroke="#ffdbac" stroke-width="2.5"/>
+  </g>
+  
+  <!-- Purple Wizard - Facing Left (40, 120) -->
+  <g id="purple-left" transform="translate(40, 120)">
+    <ellipse cx="20" cy="35" rx="7" ry="2" fill="rgba(0,0,0,0.3)"/>
+    <polygon points="20,5 14,15 26,15" fill="hsl(280, 80%, 30%)"/>
+    <rect x="12" y="14" width="16" height="3" fill="hsl(280, 70%, 25%)"/>
+    <circle cx="20" cy="20" r="5" fill="#ffdbac"/>
+    <rect x="16" y="19" width="2" height="2" fill="#000"/>
+    <rect x="20" y="19" width="2" height="2" fill="#000"/>
+    <polygon points="16,23 15,28 20,26 25,28 24,23" fill="#ddd"/>
+    <polygon points="20,24 12,26 14,36 26,36 28,26" fill="hsl(280, 70%, 50%)"/>
+    <line x1="30" y1="20" x2="30" y2="34" stroke="#8b4513" stroke-width="2.5"/>
+    <circle cx="30" cy="18" r="3" fill="hsl(100, 80%, 60%)"/>
+    <circle cx="30" cy="18" r="1.5" fill="hsl(100, 80%, 80%)"/>
+    <line x1="24" y1="26" x2="30" y2="22" stroke="#ffdbac" stroke-width="2.5"/>
+  </g>
+  
+  <!-- Grid lines (optional - remove if not needed) -->
+  <line x1="40" y1="0" x2="40" y2="160" stroke="#333" stroke-width="0.5" opacity="0.3"/>
+  <line x1="0" y1="40" x2="80" y2="40" stroke="#333" stroke-width="0.5" opacity="0.3"/>
+  <line x1="0" y1="80" x2="80" y2="80" stroke="#333" stroke-width="0.5" opacity="0.3"/>
+  <line x1="0" y1="120" x2="80" y2="120" stroke="#333" stroke-width="0.5" opacity="0.3"/>
+</svg>

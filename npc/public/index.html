@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Arcane Duel - Wizard's Arena</title>
+        <script src="/socket.io/socket.io.js"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;500;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="style.css" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;500;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap"
+            rel="stylesheet"
+        />
+    </head>
+    <body>
+
+        <!-- Animated background layers -->
+        <div class="bg-layer stars"></div>
+        <div class="bg-layer nebula"></div>
+        <div class="bg-layer particles"></div>
+
+        <!-- Floating runes decoration -->
+        <div class="floating-runes">
+            <span class="rune" style="--delay: 0s; --x: 10%; --y: 20%"
+                >&#x16A0;</span
+            >
+            <span class="rune" style="--delay: 2s; --x: 85%; --y: 15%"
+                >&#x16A2;</span
+            >
+            <span class="rune" style="--delay: 4s; --x: 75%; --y: 70%"
+                >&#x16A6;</span
+            >
+            <span class="rune" style="--delay: 1s; --x: 15%; --y: 75%"
+                >&#x16A8;</span
+            >
+            <span class="rune" style="--delay: 3s; --x: 90%; --y: 45%"
+                >&#x16B1;</span
+            >
+            <span class="rune" style="--delay: 5s; --x: 5%; --y: 50%"
+                >&#x16B7;</span
+            >
+            <span class="rune" style="--delay: 2.5s; --x: 50%; --y: 5%"
+                >&#x16C1;</span
+            >
+            <span class="rune" style="--delay: 1.5s; --x: 45%; --y: 90%"
+                >&#x16C7;</span
+            >
+        </div>
+
+        <div class="main-container">
+            <!-- Lobby Section -->
+            <div id="lobby" class="card">
+                <div class="card-glow"></div>
+                <div class="card-border"></div>
+                <div class="card-content">
+                    <div class="emblem">
+                        <svg viewBox="0 0 100 100" class="wizard-icon">
+                            <defs>
+                                <linearGradient
+                                    id="goldGrad"
+                                    x1="0%"
+                                    y1="0%"
+                                    x2="100%"
+                                    y2="100%"
+                                >
+                                    <stop
+                                        offset="0%"
+                                        style="stop-color: #ffd700"
+                                    />
+                                    <stop
+                                        offset="50%"
+                                        style="stop-color: #ffec8b"
+                                    />
+                                    <stop
+                                        offset="100%"
+                                        style="stop-color: #daa520"
+                                    />
+                                </linearGradient>
+                            </defs>
+                            <!-- Wizard hat -->
+                            <path
+                                d="M50 5 L75 45 L25 45 Z"
+                                fill="url(#goldGrad)"
+                                class="hat-top"
+                            />
+                            <ellipse
+                                cx="50"
+                                cy="45"
+                                rx="30"
+                                ry="8"
+                                fill="url(#goldGrad)"
+                            />
+                            <!-- Stars on hat -->
+                            <circle cx="45" cy="25" r="2" fill="#1a0a2e" />
+                            <circle cx="55" cy="35" r="1.5" fill="#1a0a2e" />
+                            <circle cx="40" cy="38" r="1" fill="#1a0a2e" />
+                            <!-- Wand -->
+                            <line
+                                x1="70"
+                                y1="55"
+                                x2="85"
+                                y2="70"
+                                stroke="url(#goldGrad)"
+                                stroke-width="3"
+                                stroke-linecap="round"
+                            />
+                            <circle
+                                cx="70"
+                                cy="55"
+                                r="4"
+                                fill="#ff6b6b"
+                                class="wand-tip"
+                            />
+                        </svg>
+                    </div>
+
+                    <h1 class="title">
+                        <span class="title-main">Arcane Duel</span>
+                        <span class="title-sub">Enter the Wizard's Arena</span>
+                    </h1>
+
+                    <div class="spell-circle">
+                        <svg viewBox="0 0 200 200" class="circle-svg">
+                            <circle
+                                cx="100"
+                                cy="100"
+                                r="95"
+                                class="outer-ring"
+                            />
+                            <circle
+                                cx="100"
+                                cy="100"
+                                r="80"
+                                class="inner-ring"
+                            />
+                            <!-- Rune marks -->
+                            <text x="100" y="25" class="circle-rune">
+                                &#x16A0;
+                            </text>
+                            <text x="175" y="105" class="circle-rune">
+                                &#x16B1;
+                            </text>
+                            <text x="100" y="185" class="circle-rune">
+                                &#x16C1;
+                            </text>
+                            <text x="25" y="105" class="circle-rune">
+                                &#x16D2;
+                            </text>
+                        </svg>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="roomId" class="input-label">
+                            <span class="label-icon">&#x2726;</span>
+                            Chamber Name
+                        </label>
+                        <div class="input-wrapper">
+                            <input
+                                type="text"
+                                id="roomId"
+                                placeholder="Enter mystical chamber..."
+                                required
+                            />
+                            <div class="input-glow"></div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="nickname" class="input-label">
+                            <span class="label-icon">&#x2605;</span>
+                            Wizard Name
+                        </label>
+                        <div class="input-wrapper">
+                            <input
+                                type="text"
+                                id="nickname"
+                                placeholder="Speak your true name..."
+                                required
+                            />
+                            <div class="input-glow"></div>
+                        </div>
+                    </div>
+
+                    <div id="error" class="error-message">
+                        <span class="error-icon">&#x26A0;</span>
+                        <span class="error-text"></span>
+                    </div>
+
+                    <button id="joinBtn" class="btn-primary">
+                        <span class="btn-text">Open Portal</span>
+                        <span class="btn-icon">&#x2728;</span>
+                        <div class="btn-shimmer"></div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Room Section -->
+            <div id="room" class="card">
+                <div class="card-glow"></div>
+                <div class="card-border"></div>
+                <div class="card-content">
+                    <div class="room-header">
+                        <div class="room-emblem">
+                            <svg viewBox="0 0 60 60" class="portal-icon">
+                                <circle
+                                    cx="30"
+                                    cy="30"
+                                    r="25"
+                                    class="portal-outer"
+                                />
+                                <circle
+                                    cx="30"
+                                    cy="30"
+                                    r="18"
+                                    class="portal-inner"
+                                />
+                                <circle
+                                    cx="30"
+                                    cy="30"
+                                    r="10"
+                                    class="portal-core"
+                                />
+                            </svg>
+                        </div>
+                        <h1 class="room-title">
+                            <span class="room-label">Chamber of</span>
+                            <span id="currentRoomId" class="room-name"></span>
+                        </h1>
+                    </div>
+
+                    <div class="wizards-section">
+                        <h2 class="section-title">
+                            <span class="section-icon">&#x2694;</span>
+                            Assembled Wizards
+                            <span class="section-icon">&#x2694;</span>
+                        </h2>
+                        <ul id="playersList" class="players-list"></ul>
+                    </div>
+
+                    <div id="mode-section" class="mode-section">
+                        <h2 class="section-title">
+                            <span class="section-icon">&#x2600;</span>
+                            Match Mode
+                            <span class="section-icon">&#x2600;</span>
+                        </h2>
+                        <div class="mode-toggle" id="mode-toggle">
+                            <button type="button" class="mode-btn" data-mode="multi">
+                                Multiplayer
+                            </button>
+                            <button type="button" class="mode-btn" data-mode="single">
+                                Single Player
+                            </button>
+                        </div>
+                        <p id="mode-summary" class="mode-summary">
+                            Multiplayer allows up to 4 human wizards.
+                        </p>
+                    </div>
+
+                    <div id="npc-config-section" class="npc-config-section">
+                        <h2 class="section-title">
+                            <span class="section-icon">&#x2726;</span>
+                            Virtual Opponents
+                            <span class="section-icon">&#x2726;</span>
+                        </h2>
+                        <div class="npc-count-row">
+                            <label class="npc-count-label" for="npcCountSelect">Opponents</label>
+                            <div class="input-wrapper npc-count-select">
+                                <select id="npcCountSelect">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                </select>
+                                <div class="input-glow"></div>
+                            </div>
+                        </div>
+                        <div id="npc-config-list" class="npc-config-list"></div>
+                    </div>
+
+                    <div id="map-selection-section" class="map-selection-section">
+                        <h2 class="section-title">
+                            <span class="section-icon">&#x26F0;</span>
+                            Arena Selection
+                            <span class="section-icon">&#x26F0;</span>
+                        </h2>
+                        <div class="input-wrapper map-select-wrapper">
+                            <select id="mapSelect"></select>
+                            <div class="input-glow"></div>
+                        </div>
+                        <p id="map-selection-summary" class="map-selection-summary">
+                            Selected map:
+                        </p>
+                    </div>
+
+                    <div id="spell-loadout-section" class="spell-loadout-section">
+                        <h2 class="section-title">
+                            <span class="section-icon">&#x2728;</span>
+                            Spell Loadout
+                            <span class="section-icon">&#x2728;</span>
+                        </h2>
+                        <p class="spell-selection-help">
+                            Select exactly 3 unique spells before the duel starts.
+                        </p>
+                        <div id="spell-options" class="spell-options"></div>
+                        <p id="spell-selection-summary" class="spell-selection-summary">
+                            Selected 0/3 spells
+                        </p>
+                    </div>
+
+                    <div id="chat" class="chat-section">
+                        <h2 class="section-title">
+                            <span class="section-icon">&#x270D;</span>
+                            Mystic Scroll
+                            <span class="section-icon">&#x270D;</span>
+                        </h2>
+                        <div id="chat-messages" class="chat-messages">
+                            <div class="chat-placeholder">
+                                The scroll awaits your words...
+                            </div>
+                        </div>
+                        <div class="chat-input-row">
+                            <div class="input-wrapper chat-input-wrapper">
+                                <input
+                                    id="chat-input"
+                                    placeholder="Cast your message..."
+                                />
+                                <div class="input-glow"></div>
+                            </div>
+                            <button id="chat-send" class="btn-send">
+                                <span>&#x2728;</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="error-room" class="error-message">
+                        <span class="error-icon">&#x26A0;</span>
+                        <span class="error-text"></span>
+                    </div>
+
+                    <button id="startBtn" class="btn-primary btn-start">
+                        <span class="btn-text">Begin the Duel</span>
+                        <span class="btn-icon">&#x2694;</span>
+                        <div class="btn-shimmer"></div>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="match-result-modal" class="match-result-modal">
+            <div class="match-result-card">
+                <div class="match-result-title">Match Complete</div>
+                <div class="match-result-winner" id="match-result-winner">Winner: --</div>
+                <div class="match-result-reason" id="match-result-reason"></div>
+                <div class="match-result-reload">Returning to lobby...</div>
+            </div>
+        </div>
+        <div class="dead-player-modal">
+        <h1>You have been killed</h1>
+        </div>
+        <script type="module" src="script.js"></script>
+    </body>
+</html>

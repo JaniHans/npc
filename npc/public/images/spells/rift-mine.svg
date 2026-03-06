@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140" viewBox="0 0 140 140">
+  <defs>
+    <radialGradient id="riftGlow" cx="50%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#a8f7ff"/>
+      <stop offset="55%" stop-color="#4fd1ff"/>
+      <stop offset="100%" stop-color="#1b2d6b"/>
+    </radialGradient>
+  </defs>
+  <circle cx="70" cy="70" r="48" fill="url(#riftGlow)"/>
+  <circle cx="70" cy="70" r="26" fill="none" stroke="#e9fbff" stroke-width="4" opacity="0.8"/>
+  <circle cx="70" cy="70" r="10" fill="#ffffff" opacity="0.9"/>
+</svg>

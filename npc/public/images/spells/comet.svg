@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140" viewBox="0 0 140 140">
+  <defs>
+    <linearGradient id="cometTail" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff5d8" stop-opacity="0.9"/>
+      <stop offset="55%" stop-color="#ffb25b" stop-opacity="0.65"/>
+      <stop offset="100%" stop-color="#ff5b2e" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <path d="M20 100 L70 50" stroke="url(#cometTail)" stroke-width="24" stroke-linecap="round"/>
+  <circle cx="82" cy="38" r="24" fill="#ff9d3d"/>
+  <circle cx="82" cy="38" r="14" fill="#fff3c4"/>
+</svg>

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140" viewBox="0 0 140 140">
+  <defs>
+    <linearGradient id="boomerangGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffe9b3"/>
+      <stop offset="55%" stop-color="#ffae42"/>
+      <stop offset="100%" stop-color="#d36b00"/>
+    </linearGradient>
+  </defs>
+  <path d="M38 28 C72 18, 96 42, 88 66 C82 84, 62 90, 48 80 C40 74, 40 64, 46 58 C54 50, 66 54, 68 64"
+        fill="none" stroke="url(#boomerangGrad)" stroke-width="18" stroke-linecap="round"/>
+</svg>

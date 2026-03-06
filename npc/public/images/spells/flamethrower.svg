@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140" viewBox="0 0 140 140">
+  <defs>
+    <linearGradient id="flameJet" x1="0%" y1="50%" x2="100%" y2="50%">
+      <stop offset="0%" stop-color="#fff4c7"/>
+      <stop offset="35%" stop-color="#ffbf5a"/>
+      <stop offset="70%" stop-color="#ff7a30"/>
+      <stop offset="100%" stop-color="#b62400"/>
+    </linearGradient>
+  </defs>
+  <path d="M24 70 C44 54, 62 46, 84 52 C104 58, 114 48, 120 34 C124 56, 118 68, 100 76 C114 82, 122 96, 120 108 C106 94, 92 88, 76 88 C56 88, 40 82, 24 70 Z"
+        fill="url(#flameJet)"/>
+</svg>
