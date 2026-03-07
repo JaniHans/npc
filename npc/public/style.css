@@ -708,6 +708,95 @@ body {
     text-align: center;
 }
 
+.instructions-dropdown {
+    position: relative;
+    margin-top: 0.9rem;
+}
+
+.instructions-button {
+    list-style: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 0.8rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 215, 0, 0.26);
+    background:
+        linear-gradient(135deg, rgba(255, 215, 0, 0.14), rgba(0, 212, 255, 0.1)),
+        rgba(12, 8, 20, 0.9);
+    color: var(--gold-light);
+    font-family: var(--font-heading);
+    font-size: 0.76rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    user-select: none;
+    transition: var(--transition-fast);
+}
+
+.instructions-button::-webkit-details-marker {
+    display: none;
+}
+
+.instructions-button::after {
+    content: "\25BE";
+    font-size: 0.72rem;
+    color: var(--magic-cyan);
+    transition: transform 0.2s ease;
+}
+
+.instructions-dropdown[open] .instructions-button {
+    border-color: rgba(255, 215, 0, 0.45);
+    box-shadow: 0 0 18px rgba(255, 215, 0, 0.14);
+}
+
+.instructions-dropdown[open] .instructions-button::after {
+    transform: rotate(180deg);
+}
+
+.instructions-panel {
+    width: min(100%, 320px);
+    margin-top: 0.75rem;
+    padding: 0.95rem 1rem;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    background:
+        linear-gradient(180deg, rgba(255, 215, 0, 0.08), rgba(0, 0, 0, 0)),
+        rgba(10, 6, 18, 0.96);
+    box-shadow:
+        inset 0 0 28px rgba(0, 0, 0, 0.35),
+        0 14px 30px rgba(0, 0, 0, 0.24);
+}
+
+.instructions-panel-title {
+    margin-bottom: 0.65rem;
+    font-family: var(--font-heading);
+    font-size: 0.82rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold-bright);
+}
+
+.instructions-list {
+    margin: 0;
+    padding-left: 1.1rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.55;
+}
+
+.instructions-list li + li {
+    margin-top: 0.35rem;
+}
+
+.instructions-list code {
+    padding: 0.08rem 0.36rem;
+    border-radius: 999px;
+    background: rgba(0, 212, 255, 0.12);
+    color: #d7fbff;
+    font-size: 0.84em;
+}
+
 .room-label {
     display: block;
     font-family: var(--font-heading);
@@ -1254,6 +1343,11 @@ body {
 
     .room-name {
         font-size: 1.5rem;
+    }
+
+    .instructions-panel {
+        width: min(100%, 280px);
+        padding: 0.85rem 0.9rem;
     }
 
     .rune {

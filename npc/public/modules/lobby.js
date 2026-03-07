@@ -84,6 +84,8 @@ export function initLobby(
   let selfSelectedSpellIds = [];
   let mode = "multi";
   let npcConfigs = createDefaultNpcConfigs(NPC_COUNT_LIMITS.min);
+  const npcNameDrafts = new Map();
+  let suppressNpcNameBlurCommit = false;
   let npcSyncTimeoutId = null;
   let suppressSpellOptionEvents = false;
 
@@ -249,6 +251,100 @@ export function initLobby(
     return npcConfigs[index] || sanitizeNpcConfig({}, index);
   }
 
+  function pruneNpcNameDrafts() {
+    for (const draftIndex of Array.from(npcNameDrafts.keys())) {
+      if (draftIndex < 0 || draftIndex >= npcConfigs.length) {
+        npcNameDrafts.delete(draftIndex);
+      }
+    }
+  }
+
+  function getNpcDisplayName(config, index) {
+    if (npcNameDrafts.has(index)) {
+      return npcNameDrafts.get(index);
+    }
+    return config.name || `NPC ${index + 1}`;
+  }
+
+  function commitNpcName(index, rawName) {
+    const currentConfig = getNpcConfigByIndex(index);
+    const nextConfig = sanitizeNpcConfig(
+      { ...currentConfig, name: rawName },
+      index,
+    );
+
+    npcNameDrafts.delete(index);
+    if (currentConfig.name === nextConfig.name) {
+      return nextConfig.name;
+    }
+
+    npcConfigs[index] = nextConfig;
+    scheduleNpcSync();
+    return nextConfig.name;
+  }
+
+  function captureNpcControlState() {
+    if (!npcConfigList) {
+      return null;
+    }
+
+    const activeElement = document.activeElement;
+    if (!(activeElement instanceof HTMLElement) || !npcConfigList.contains(activeElement)) {
+      return null;
+    }
+
+    const npcIndex = activeElement.getAttribute("data-npc-index");
+    const npcField = activeElement.getAttribute("data-npc-field");
+    if (!npcIndex || !npcField) {
+      return null;
+    }
+
+    const controlState = { npcIndex, npcField };
+    if (
+      activeElement instanceof HTMLInputElement ||
+      activeElement instanceof HTMLTextAreaElement
+    ) {
+      controlState.selectionStart = activeElement.selectionStart;
+      controlState.selectionEnd = activeElement.selectionEnd;
+    }
+
+    return controlState;
+  }
+
+  function restoreNpcControlState(controlState) {
+    if (!npcConfigList || !controlState) {
+      return;
+    }
+
+    const nextActiveElement = npcConfigList.querySelector(
+      `[data-npc-index="${controlState.npcIndex}"][data-npc-field="${controlState.npcField}"]`,
+    );
+    if (!(nextActiveElement instanceof HTMLElement)) {
+      return;
+    }
+    if (
+      (nextActiveElement instanceof HTMLInputElement ||
+        nextActiveElement instanceof HTMLSelectElement ||
+        nextActiveElement instanceof HTMLTextAreaElement) &&
+      nextActiveElement.disabled
+    ) {
+      return;
+    }
+
+    nextActiveElement.focus();
+    if (
+      nextActiveElement instanceof HTMLInputElement &&
+      typeof controlState.selectionStart === "number" &&
+      typeof controlState.selectionEnd === "number"
+    ) {
+      const valueLength = nextActiveElement.value.length;
+      nextActiveElement.setSelectionRange(
+        Math.min(controlState.selectionStart, valueLength),
+        Math.min(controlState.selectionEnd, valueLength),
+      );
+    }
+  }
+
   function scheduleNpcSync() {
     if (!activeRoomId) {
       return;
@@ -280,207 +376,239 @@ export function initLobby(
     if (!npcConfigList || !npcCountSelect) {
       return;
     }
+    pruneNpcNameDrafts();
+    const focusedControlState = captureNpcControlState();
     const isHost = hostId === selfPlayerId;
     npcCountSelect.disabled = !isHost;
     npcCountSelect.value = String(npcConfigs.length);
-    npcConfigList.innerHTML = "";
+    suppressNpcNameBlurCommit = true;
+    try {
+      npcConfigList.innerHTML = "";
 
-    npcConfigs.forEach((config, index) => {
-      const archetype = getNpcArchetypeById(config.archetypeId);
-      const difficulty = getNpcDifficultyById(config.difficulty);
-      const stats = getNpcEffectiveStats(config);
-      const card = document.createElement("div");
-      card.className = `npc-card ${isHost ? "" : "is-disabled"}`.trim();
+      npcConfigs.forEach((config, index) => {
+        const archetype = getNpcArchetypeById(config.archetypeId);
+        const difficulty = getNpcDifficultyById(config.difficulty);
+        const stats = getNpcEffectiveStats(config);
+        const card = document.createElement("div");
+        card.className = `npc-card ${isHost ? "" : "is-disabled"}`.trim();
 
-      const header = document.createElement("div");
-      header.className = "npc-card-header";
-      const title = document.createElement("div");
-      title.className = "npc-card-title";
-      title.textContent = `Opponent ${index + 1}`;
-      const effectiveness = document.createElement("div");
-      effectiveness.className = "npc-effectiveness";
-      effectiveness.textContent = `Effectiveness ${stats.effectivenessScore}`;
-      header.append(title, effectiveness);
+        const header = document.createElement("div");
+        header.className = "npc-card-header";
+        const title = document.createElement("div");
+        title.className = "npc-card-title";
+        title.textContent = `Opponent ${index + 1}`;
+        const effectiveness = document.createElement("div");
+        effectiveness.className = "npc-effectiveness";
+        effectiveness.textContent = `Effectiveness ${stats.effectivenessScore}`;
+        header.append(title, effectiveness);
 
-      const fields = document.createElement("div");
-      fields.className = "npc-fields";
+        const fields = document.createElement("div");
+        fields.className = "npc-fields";
 
-      const nameField = document.createElement("label");
-      nameField.className = "npc-field";
-      nameField.textContent = "Name";
-      const nameInput = document.createElement("input");
-      nameInput.value = config.name || `NPC ${index + 1}`;
-      nameInput.disabled = !isHost;
-      nameInput.addEventListener("input", () => {
-        npcConfigs[index] = sanitizeNpcConfig(
-          { ...getNpcConfigByIndex(index), name: nameInput.value },
-          index,
+        const nameField = document.createElement("label");
+        nameField.className = "npc-field";
+        nameField.textContent = "Name";
+        const nameInput = document.createElement("input");
+        nameInput.value = getNpcDisplayName(config, index);
+        nameInput.disabled = !isHost;
+        nameInput.dataset.npcIndex = String(index);
+        nameInput.dataset.npcField = "name";
+        nameInput.addEventListener("input", () => {
+          npcNameDrafts.set(index, nameInput.value);
+        });
+        nameInput.addEventListener("blur", () => {
+          if (suppressNpcNameBlurCommit) {
+            return;
+          }
+          const nextName = commitNpcName(index, nameInput.value);
+          nameInput.value = nextName;
+        });
+        nameInput.addEventListener("keydown", (event) => {
+          if (event.key !== "Enter") {
+            return;
+          }
+          event.preventDefault();
+          nameInput.blur();
+        });
+        nameField.appendChild(nameInput);
+
+        const archetypeField = document.createElement("label");
+        archetypeField.className = "npc-field";
+        archetypeField.textContent = "Archetype";
+        const archetypeSelect = document.createElement("select");
+        archetypeSelect.disabled = !isHost;
+        archetypeSelect.dataset.npcIndex = String(index);
+        archetypeSelect.dataset.npcField = "archetype";
+        NPC_ARCHETYPES.forEach((entry) => {
+          const option = document.createElement("option");
+          option.value = entry.id;
+          option.textContent = entry.name;
+          archetypeSelect.appendChild(option);
+        });
+        archetypeSelect.value = config.archetypeId;
+        archetypeSelect.addEventListener("change", () => {
+          npcConfigs[index] = sanitizeNpcConfig(
+            { ...getNpcConfigByIndex(index), archetypeId: archetypeSelect.value },
+            index,
+          );
+          scheduleNpcSync();
+          renderNpcConfigs();
+        });
+        archetypeField.appendChild(archetypeSelect);
+
+        const difficultyField = document.createElement("label");
+        difficultyField.className = "npc-field";
+        difficultyField.textContent = "Difficulty";
+        const difficultySelect = document.createElement("select");
+        difficultySelect.disabled = !isHost;
+        difficultySelect.dataset.npcIndex = String(index);
+        difficultySelect.dataset.npcField = "difficulty";
+        NPC_DIFFICULTY_PRESETS.forEach((entry) => {
+          const option = document.createElement("option");
+          option.value = entry.id;
+          option.textContent = entry.label;
+          difficultySelect.appendChild(option);
+        });
+        difficultySelect.value = config.difficulty;
+        difficultySelect.addEventListener("change", () => {
+          npcConfigs[index] = sanitizeNpcConfig(
+            { ...getNpcConfigByIndex(index), difficulty: difficultySelect.value },
+            index,
+          );
+          scheduleNpcSync();
+          renderNpcConfigs();
+        });
+        difficultyField.appendChild(difficultySelect);
+
+        const aggressionField = document.createElement("label");
+        aggressionField.className = "npc-field";
+        aggressionField.textContent = "Aggression";
+        const aggressionInput = document.createElement("input");
+        aggressionInput.type = "range";
+        aggressionInput.min = "0";
+        aggressionInput.max = "100";
+        aggressionInput.value = String(config.aggression ?? 50);
+        aggressionInput.disabled = !isHost;
+        aggressionInput.dataset.npcIndex = String(index);
+        aggressionInput.dataset.npcField = "aggression";
+        const aggressionValue = document.createElement("div");
+        aggressionValue.className = "npc-slider-value";
+        aggressionValue.textContent = `${Math.round(config.aggression ?? 50)}`;
+        aggressionInput.addEventListener("input", () => {
+          aggressionValue.textContent = aggressionInput.value;
+          npcConfigs[index] = sanitizeNpcConfig(
+            { ...getNpcConfigByIndex(index), aggression: Number(aggressionInput.value) },
+            index,
+          );
+          scheduleNpcSync();
+        });
+        aggressionField.appendChild(aggressionInput);
+        aggressionField.appendChild(aggressionValue);
+
+        const precisionField = document.createElement("label");
+        precisionField.className = "npc-field";
+        precisionField.textContent = "Precision";
+        const precisionInput = document.createElement("input");
+        precisionInput.type = "range";
+        precisionInput.min = "0";
+        precisionInput.max = "100";
+        precisionInput.value = String(config.precision ?? 50);
+        precisionInput.disabled = !isHost;
+        precisionInput.dataset.npcIndex = String(index);
+        precisionInput.dataset.npcField = "precision";
+        const precisionValue = document.createElement("div");
+        precisionValue.className = "npc-slider-value";
+        precisionValue.textContent = `${Math.round(config.precision ?? 50)}`;
+        precisionInput.addEventListener("input", () => {
+          precisionValue.textContent = precisionInput.value;
+          npcConfigs[index] = sanitizeNpcConfig(
+            { ...getNpcConfigByIndex(index), precision: Number(precisionInput.value) },
+            index,
+          );
+          scheduleNpcSync();
+        });
+        precisionField.appendChild(precisionInput);
+        precisionField.appendChild(precisionValue);
+
+        const mobilityField = document.createElement("label");
+        mobilityField.className = "npc-field";
+        mobilityField.textContent = "Mobility";
+        const mobilityInput = document.createElement("input");
+        mobilityInput.type = "range";
+        mobilityInput.min = "0";
+        mobilityInput.max = "100";
+        mobilityInput.value = String(config.mobility ?? 50);
+        mobilityInput.disabled = !isHost;
+        mobilityInput.dataset.npcIndex = String(index);
+        mobilityInput.dataset.npcField = "mobility";
+        const mobilityValue = document.createElement("div");
+        mobilityValue.className = "npc-slider-value";
+        mobilityValue.textContent = `${Math.round(config.mobility ?? 50)}`;
+        mobilityInput.addEventListener("input", () => {
+          mobilityValue.textContent = mobilityInput.value;
+          npcConfigs[index] = sanitizeNpcConfig(
+            { ...getNpcConfigByIndex(index), mobility: Number(mobilityInput.value) },
+            index,
+          );
+          scheduleNpcSync();
+        });
+        mobilityField.appendChild(mobilityInput);
+        mobilityField.appendChild(mobilityValue);
+
+        const powerField = document.createElement("label");
+        powerField.className = "npc-field";
+        powerField.textContent = "Power";
+        const powerInput = document.createElement("input");
+        powerInput.type = "range";
+        powerInput.min = "0";
+        powerInput.max = "100";
+        powerInput.value = String(config.power ?? 50);
+        powerInput.disabled = !isHost;
+        powerInput.dataset.npcIndex = String(index);
+        powerInput.dataset.npcField = "power";
+        const powerValue = document.createElement("div");
+        powerValue.className = "npc-slider-value";
+        powerValue.textContent = `${Math.round(config.power ?? 50)}`;
+        powerInput.addEventListener("input", () => {
+          powerValue.textContent = powerInput.value;
+          npcConfigs[index] = sanitizeNpcConfig(
+            { ...getNpcConfigByIndex(index), power: Number(powerInput.value) },
+            index,
+          );
+          scheduleNpcSync();
+        });
+        powerField.appendChild(powerInput);
+        powerField.appendChild(powerValue);
+
+        fields.append(
+          nameField,
+          archetypeField,
+          difficultyField,
+          aggressionField,
+          precisionField,
+          mobilityField,
+          powerField,
         );
-        scheduleNpcSync();
-        renderNpcConfigs();
-      });
-      nameField.appendChild(nameInput);
 
-      const archetypeField = document.createElement("label");
-      archetypeField.className = "npc-field";
-      archetypeField.textContent = "Archetype";
-      const archetypeSelect = document.createElement("select");
-      archetypeSelect.disabled = !isHost;
-      NPC_ARCHETYPES.forEach((entry) => {
-        const option = document.createElement("option");
-        option.value = entry.id;
-        option.textContent = entry.name;
-        archetypeSelect.appendChild(option);
-      });
-      archetypeSelect.value = config.archetypeId;
-      archetypeSelect.addEventListener("change", () => {
-        npcConfigs[index] = sanitizeNpcConfig(
-          { ...getNpcConfigByIndex(index), archetypeId: archetypeSelect.value },
-          index,
-        );
-        scheduleNpcSync();
-        renderNpcConfigs();
-      });
-      archetypeField.appendChild(archetypeSelect);
+        const loadout = archetype?.loadout
+          ? archetype.loadout
+              .map(
+                (spellId) => SPELLS.find((spell) => spell.id === spellId)?.name || spellId,
+              )
+              .join(", ")
+          : "";
+        const loadoutLine = document.createElement("div");
+        loadoutLine.className = "npc-loadout";
+        loadoutLine.textContent = `Loadout: ${loadout}`;
 
-      const difficultyField = document.createElement("label");
-      difficultyField.className = "npc-field";
-      difficultyField.textContent = "Difficulty";
-      const difficultySelect = document.createElement("select");
-      difficultySelect.disabled = !isHost;
-      NPC_DIFFICULTY_PRESETS.forEach((entry) => {
-        const option = document.createElement("option");
-        option.value = entry.id;
-        option.textContent = entry.label;
-        difficultySelect.appendChild(option);
+        card.append(header, fields, loadoutLine);
+        npcConfigList.appendChild(card);
       });
-      difficultySelect.value = config.difficulty;
-      difficultySelect.addEventListener("change", () => {
-        npcConfigs[index] = sanitizeNpcConfig(
-          { ...getNpcConfigByIndex(index), difficulty: difficultySelect.value },
-          index,
-        );
-        scheduleNpcSync();
-        renderNpcConfigs();
-      });
-      difficultyField.appendChild(difficultySelect);
 
-      const aggressionField = document.createElement("label");
-      aggressionField.className = "npc-field";
-      aggressionField.textContent = "Aggression";
-      const aggressionInput = document.createElement("input");
-      aggressionInput.type = "range";
-      aggressionInput.min = "0";
-      aggressionInput.max = "100";
-      aggressionInput.value = String(config.aggression ?? 50);
-      aggressionInput.disabled = !isHost;
-      const aggressionValue = document.createElement("div");
-      aggressionValue.className = "npc-slider-value";
-      aggressionValue.textContent = `${Math.round(config.aggression ?? 50)}`;
-      aggressionInput.addEventListener("input", () => {
-        aggressionValue.textContent = aggressionInput.value;
-        npcConfigs[index] = sanitizeNpcConfig(
-          { ...getNpcConfigByIndex(index), aggression: Number(aggressionInput.value) },
-          index,
-        );
-        scheduleNpcSync();
-      });
-      aggressionField.appendChild(aggressionInput);
-      aggressionField.appendChild(aggressionValue);
-
-      const precisionField = document.createElement("label");
-      precisionField.className = "npc-field";
-      precisionField.textContent = "Precision";
-      const precisionInput = document.createElement("input");
-      precisionInput.type = "range";
-      precisionInput.min = "0";
-      precisionInput.max = "100";
-      precisionInput.value = String(config.precision ?? 50);
-      precisionInput.disabled = !isHost;
-      const precisionValue = document.createElement("div");
-      precisionValue.className = "npc-slider-value";
-      precisionValue.textContent = `${Math.round(config.precision ?? 50)}`;
-      precisionInput.addEventListener("input", () => {
-        precisionValue.textContent = precisionInput.value;
-        npcConfigs[index] = sanitizeNpcConfig(
-          { ...getNpcConfigByIndex(index), precision: Number(precisionInput.value) },
-          index,
-        );
-        scheduleNpcSync();
-      });
-      precisionField.appendChild(precisionInput);
-      precisionField.appendChild(precisionValue);
-
-      const mobilityField = document.createElement("label");
-      mobilityField.className = "npc-field";
-      mobilityField.textContent = "Mobility";
-      const mobilityInput = document.createElement("input");
-      mobilityInput.type = "range";
-      mobilityInput.min = "0";
-      mobilityInput.max = "100";
-      mobilityInput.value = String(config.mobility ?? 50);
-      mobilityInput.disabled = !isHost;
-      const mobilityValue = document.createElement("div");
-      mobilityValue.className = "npc-slider-value";
-      mobilityValue.textContent = `${Math.round(config.mobility ?? 50)}`;
-      mobilityInput.addEventListener("input", () => {
-        mobilityValue.textContent = mobilityInput.value;
-        npcConfigs[index] = sanitizeNpcConfig(
-          { ...getNpcConfigByIndex(index), mobility: Number(mobilityInput.value) },
-          index,
-        );
-        scheduleNpcSync();
-      });
-      mobilityField.appendChild(mobilityInput);
-      mobilityField.appendChild(mobilityValue);
-
-      const powerField = document.createElement("label");
-      powerField.className = "npc-field";
-      powerField.textContent = "Power";
-      const powerInput = document.createElement("input");
-      powerInput.type = "range";
-      powerInput.min = "0";
-      powerInput.max = "100";
-      powerInput.value = String(config.power ?? 50);
-      powerInput.disabled = !isHost;
-      const powerValue = document.createElement("div");
-      powerValue.className = "npc-slider-value";
-      powerValue.textContent = `${Math.round(config.power ?? 50)}`;
-      powerInput.addEventListener("input", () => {
-        powerValue.textContent = powerInput.value;
-        npcConfigs[index] = sanitizeNpcConfig(
-          { ...getNpcConfigByIndex(index), power: Number(powerInput.value) },
-          index,
-        );
-        scheduleNpcSync();
-      });
-      powerField.appendChild(powerInput);
-      powerField.appendChild(powerValue);
-
-      fields.append(
-        nameField,
-        archetypeField,
-        difficultyField,
-        aggressionField,
-        precisionField,
-        mobilityField,
-        powerField,
-      );
-
-      const loadout = archetype?.loadout
-        ? archetype.loadout
-            .map(
-              (spellId) => SPELLS.find((spell) => spell.id === spellId)?.name || spellId,
-            )
-            .join(", ")
-        : "";
-      const loadoutLine = document.createElement("div");
-      loadoutLine.className = "npc-loadout";
-      loadoutLine.textContent = `Loadout: ${loadout}`;
-
-      card.append(header, fields, loadoutLine);
-      npcConfigList.appendChild(card);
-    });
+      restoreNpcControlState(focusedControlState);
+    } finally {
+      suppressNpcNameBlurCommit = false;
+    }
   }
 
   // Join room event
